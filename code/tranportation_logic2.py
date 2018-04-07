@@ -9,7 +9,6 @@ import json
 import datetime
 from project_liftoff.code import helper_functions
 
-# helper_functions.distance((53.2194, 6.5665), (53.2350682, 6.6068002))
 n_cars = 15
 ride_dict = []
 available_tu_ts = {}
@@ -21,7 +20,6 @@ with open('project_liftoff/ridelisttest.json') as json_data:
     ride_list = json.load(json_data)
     ride_list.sort()        
     ride_list_test = ride_list
-# len(ride_list) 1000
 
 class Tu():
     _registry = []
@@ -109,14 +107,10 @@ class Tr():
         + str(self.request_time) +' for ' \
         + str(round(self.get_distance_ride(),3)) + " KM" \
         + ' at '+ str(self.get_start_loc())
-        #+ datetime.time.strftime("%Y-%m-%d %H:%M:%S", self.request_time)
         
 def generate_ride(tu, tr, ride_dict, distance_tu_tr, current_ts):
     tu.update_state(4)
     waiting_time = (current_ts-tr.get_request_time())  + ((distance_tu_tr/tu.get_km_hour())*3600)
-    # key transportation_request  value: tr_name, distance van unit tot request, distance ride, waiting_time
-    #ride_dict[tr.get_request_id()] = [tu.get_name(), distance_tu_tr, tr.get_distance_ride(), waiting_time, tu.get_location(), \
-    #          tu.get_state(), tr.get_request_id, tr.get_request_time, current_ts, tu, tr]
     ride_dict.append([distance_tu_tr + tr.get_distance_ride(), waiting_time])
     
     available_ts = int(current_ts + ((distance_tu_tr/tu.get_km_hour())*3600) + ((tr.get_distance_ride()/tu.get_km_hour())*3600))
@@ -140,13 +134,11 @@ def find_tu(tr):
     else: 
         return -1, -1
 
-
 objs = list()
 for i in range(n_cars):
     name = i
     objs.append(Tu(name=name, lat=53.21720922, lon=6.575406761, person_capacity = 4, battery_state=0.2, battery_capacity=85, 
                  avg_km_per_kwh=7, state=3))
-
 
 for i in range(24*60*60):
     current_ts = datum + i
@@ -154,7 +146,6 @@ for i in range(24*60*60):
         # now the logic for the ride starts for selecting a transportation unit
         tr = Tr(ride_list_test[0][3], ride_list_test[0][4], ride_list_test[0][5], ride_list_test[0][6], ride_list_test[0][0], 
                1, ride_list_test[0][2])
-        #print(tr)
         del ride_list_test[0]
         waiting_list.append(tr)
     
@@ -168,16 +159,11 @@ for i in range(24*60*60):
             else:
                 pass
             del match_tu, distance_tu_tr
-        #kijk of timestamp overeenkomt met einde rit tijd die terugkomt uit generate_ride
     available_tu_ts2 = available_tu_ts.copy()
     for tu, ts in available_tu_ts2.items():
         if int(current_ts) >= int(ts[0]):
             finish_ride(objs[tu], ts[1], ts[2])
             available_tu_ts.pop(tu, None)
 
-print(n_cars)
-print(sum([x[0] for x in ride_dict]))
-print(sum([x[1] for x in ride_dict]))
-# avg waiting_time
-# KM gereden
+
 
