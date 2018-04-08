@@ -74,15 +74,15 @@ class Tu():
 
 class Tr():
 
-    def __init__(self, start_lat, start_lon, end_lat, end_lon,  request_time, transport_type, request_id, factor_ride=1.5):
-        self.start_lat = float(start_lat)
-        self.start_lon = float(start_lon)
-        self.end_lat = float(end_lat)
-        self.end_lon = float(end_lon)
-        self.request_id = request_id
-        self.transport_type = transport_type
-        self.request_time = request_time
-        self.factor_ride = factor_ride
+    def __init__(self, tr_dict):
+        self.start_lat = float(tr_dict['start_lat'])
+        self.start_lon = float(tr_dict['start_lon'])
+        self.end_lat = float(tr_dict['end_lat'])
+        self.end_lon = float(tr_dict['end_lon'])
+        self.request_id = tr_dict['request_id']
+        self.transport_type = tr_dict['transport_type']
+        self.request_time = tr_dict['request_time']
+        self.factor_ride = tr_dict['factor_ride']
 
     def get_distance_ride(self):
         return helper_functions.distance((self.start_lat, self.start_lon),(self.end_lat,self.end_lon)) * self.factor_ride
@@ -148,8 +148,18 @@ for i in range(24*60*60):
     current_ts = datum + i
     if len(ride_list_test) > 0 and current_ts >= ride_list_test[0][0]:
         # now the logic for the ride starts for selecting a transportation unit
-        tr = Tr(ride_list_test[0][3], ride_list_test[0][4], ride_list_test[0][5], ride_list_test[0][6], ride_list_test[0][0],
-               1, ride_list_test[0][2])
+        tr_dict = {
+          start_lat: ride_list_test[0][3],
+          start_lon: ride_list_test[0][4],
+          end_lat: ride_list_test[0][5],
+          end_lon: ride_list_test[0][6],
+          request_time: ride_list_test[0][0],
+          transport_type: 1,
+          request_id: ride_list_test[0][2],
+          factor_ride: 1.5
+        }
+
+        tr = Tr(tr_dict)
         del ride_list_test[0]
         waiting_list.append(tr)
 
