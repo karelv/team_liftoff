@@ -7,7 +7,7 @@ Created on Sat Apr  7 11:00:02 2018
 
 import json
 import datetime
-from project_liftoff.code import helper_functions
+import help_functions
 
 n_cars = 15
 ride_dict = []
@@ -16,7 +16,7 @@ waiting_list = []
 datum = datetime.datetime(2018, 4, 9, 0, 0, 0)
 datum = int(datum.timestamp())
 
-with open('project_liftoff/ridelisttest.json') as json_data:
+with open('data/ridelisttest.json') as json_data:
     ride_list = json.load(json_data)
     ride_list.sort()
     ride_list_test = ride_list
@@ -85,7 +85,7 @@ class Tr():
         self.factor_ride = tr_dict['factor_ride']
 
     def get_distance_ride(self):
-        return helper_functions.distance((self.start_lat, self.start_lon),(self.end_lat,self.end_lon)) * self.factor_ride
+        return help_functions.distance((self.start_lat, self.start_lon),(self.end_lat,self.end_lon)) * self.factor_ride
 
     def get_request_id(self):
         return self.request_id
@@ -98,7 +98,7 @@ class Tr():
 
     def get_distance_to_tu(self, tu_location):
         #location of transportation unit
-        return helper_functions.distance((tu_location[0], tu_location[1]), (self.start_lat, self.start_lon)) * self.factor_ride
+        return help_functions.distance((tu_location[0], tu_location[1]), (self.start_lat, self.start_lon)) * self.factor_ride
 
     def __str__(self):
              return 'id:' + str(self.get_request_id()) + ' requests a transport at ' \
@@ -137,9 +137,10 @@ for i in range(n_cars):
     name = i
 
     tu_dict = {
-      name: name, lat: 53.21720922, lon: 6.575406761,
-      person_capacity: 4, battery_state: 0.2, battery_capacity: 85,
-      avg_km_per_kwh:7, state:3
+      'name': name, 'lat': 53.21720922, 'lon': 6.575406761,
+      'person_capacity': 4, 'battery_state': 0.2, 'battery_capacity': 85,
+      'avg_km_per_kwh':7, 'state':3,
+      'km_hour':  50
     }
 
     objs.append(Tu(tu_dict))
@@ -149,14 +150,14 @@ for i in range(24*60*60):
     if len(ride_list_test) > 0 and current_ts >= ride_list_test[0][0]:
         # now the logic for the ride starts for selecting a transportation unit
         tr_dict = {
-          start_lat: ride_list_test[0][3],
-          start_lon: ride_list_test[0][4],
-          end_lat: ride_list_test[0][5],
-          end_lon: ride_list_test[0][6],
-          request_time: ride_list_test[0][0],
-          transport_type: 1,
-          request_id: ride_list_test[0][2],
-          factor_ride: 1.5
+          'start_lat': ride_list_test[0][3],
+          'start_lon': ride_list_test[0][4],
+          'end_lat': ride_list_test[0][5],
+          'end_lon': ride_list_test[0][6],
+          'request_time': ride_list_test[0][0],
+          'transport_type': 1,
+          'request_id': ride_list_test[0][2],
+          'factor_ride': 1.5
         }
 
         tr = Tr(tr_dict)
